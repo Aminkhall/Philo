@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 11:23:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/03 14:39:08 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/05 14:11:07 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_philo
 	pthread_mutex_t	*write_lock;
 	pthread_mutex_t	*dead_lock;
 	pthread_mutex_t	*meal_lock;
+	struct s_main	*data;
 }					t_philo;
 
 typedef struct s_main
