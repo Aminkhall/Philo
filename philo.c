@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 11:27:41 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/05 17:21:29 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/05 18:10:21 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,21 +162,30 @@ void	my_print(t_philo *philo, char *msg)
 	}
 }
 
+void ft_think(t_philo *philo)
+{
+	if (get_dead_flag(philo->data))
+		return ;
+	my_print(philo, "is thinking");
+}
+
 void	ft_eat(t_philo *philo)
 {
+	if (get_dead_flag(philo->data))
+		return ;
 	if (philo->id % 2)
 	{
 		pthread_mutex_lock(philo->l_fork);
-		my_print(philo, "tacken a fork");
+		my_print(philo, "taken a fork");
 		pthread_mutex_lock(philo->r_fork);
-		my_print(philo, "tacken a fork");
+		my_print(philo, "taken a fork");
 	}
 	else
 	{
 		pthread_mutex_lock(philo->r_fork);
-		my_print(philo, "tacken a fork");
+		my_print(philo, "taken a fork");
 		pthread_mutex_lock(philo->l_fork);
-		my_print(philo, "tacken a fork");
+		my_print(philo, "taken a fork");
 	}
 	pthread_mutex_unlock(philo->l_fork);
 	pthread_mutex_unlock(philo->r_fork);
@@ -187,6 +196,8 @@ void	ft_eat(t_philo *philo)
 
 void	ft_sleep(t_philo *philo)
 {
+	if (get_dead_flag(philo->data))
+		return ;
 	my_print(philo, "is sleeping");
 	ft_mysleep(philo->time_to_sleep);
 }
@@ -197,25 +208,25 @@ void	*routine(void *args)
 
 	philo = (t_philo *)args;
 	if (philo->id % 2 == 0)
-		usleep(1000);
-	while (1)
+		usleep(100);
+	while (!get_dead_flag(philo->data))
 	{
-		if (get_dead_flag(philo->data) == 1)
-			break ;
+		// if (get_dead_flag(philo->data) == 1)
+		// 	return (NULL);
 		// if (philo->id % 2 == 0)
 		// {
-			
 		// 	ft_sleep(philo);
 		// 	my_print(philo, "is thinking");
 		// 	ft_eat(philo);
 		// }
 		// else
 		// {
-		ft_eat(philo);
-		ft_sleep(philo);
-		my_print(philo, "is thinking");
+			ft_eat(philo);
+			ft_sleep(philo);
+			ft_think(philo);
+			
 		// }
-		
+		usleep(500);
 	}
 	return (NULL);
 }
@@ -226,9 +237,9 @@ void	*monitor(void *args)
 	int		i;
 
 	data = (t_main *)args;
-	i = 0;
 	while (1)
 	{
+		i = 0;
 		while (i < data->philos->num_of_philos)
 		{
 			if (get_current_time()
@@ -243,7 +254,7 @@ void	*monitor(void *args)
 			}
 			i++;
 		}
-		// ft_mysleep(1000);
+		usleep(1000);
 	}
 	return (NULL);
 }
