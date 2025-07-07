@@ -6,34 +6,35 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 11:27:41 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/06 10:35:39 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/07 16:20:07 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	init_main(t_main *data, int num_philo)
+int	init_main(t_main *data, int num_philo)
 {
 	int	i;
 
 	data->forks = malloc(sizeof(pthread_mutex_t) * num_philo);
 	if (!data->forks)
-		exit_error("Somting wrong with malloc");
+		return (exit_error("Somting wrong with malloc"), 1);
 	i = 0;
 	while (i < num_philo)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
-			exit_error("Failed to initialize mutex");
+			return (exit_error("Failed to initialize mutex"), 1);
 		++i;
 	}
 	if (pthread_mutex_init(&data->dead_lock, NULL) != 0)
-		exit_error("Failed to initialize mutex");
+		return (exit_error("Failed to initialize mutex"), 1);
 	if (pthread_mutex_init(&data->meal_lock, NULL) != 0)
-		exit_error("Failed to initialize mutex");
+		return (exit_error("Failed to initialize mutex"), 1);
 	if (pthread_mutex_init(&data->write_lock, NULL) != 0)
-		exit_error("Failed to initialize mutex");
+		return (exit_error("Failed to initialize mutex"), 1);
 	if (pthread_mutex_init(&data->full_lock, NULL) != 0)
-		exit_error("Failed to initialize mutex");
+		return (exit_error("Failed to initialize mutex"), 1);
+	return (0);
 }
 
 long long	get_current_time(void)
@@ -41,43 +42,19 @@ long long	get_current_time(void)
 	struct timeval	time;
 
 	if (gettimeofday(&time, NULL) == -1)
-		exit(1); /// to do
+		return (-1);
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
-// int	ft_usleep(long long ms, t_main *data)
-// {
-// 	long long	start;
 
-// 	start = get_current_time();
-// 	while ((get_current_time() - start) < ms)
-// 	{
-// 		pthread_mutex_lock(data->philos->dead_lock);
-// 		if (*data->philos->dead == 1)
-// 		{
-// 			pthread_mutex_unlock(data->philos->dead_lock);
-// 			break ;
-// 		}
-// 		pthread_mutex_unlock(data->philos->dead_lock);
-// 		usleep(500);
-// 	}
-// 	return (0);
-// }
-
-// long long	get_timestp(long long start_time)
-// {
-// 	struct timeval	current;
-
-// 	gettimeofday(&current, NULL);
-// 	return ((current.tv_sec * 1000 + current.tv_usec / 1000) - start_time);
-// }
-void	init_philo(t_main *data, char **av)
+int	init_philo(t_main *data, char **av)
 {
 	int	i;
 
 	data->philos = malloc(sizeof(t_philo) * ft_atol(av[1]));
 	if (!data->philos)
-		exit_error("Somting wrong with malloc");
-	init_main(data, ft_atol(av[1]));
+		return (exit_error("Somting wrong with malloc"), 1);
+	if (init_main(data, ft_atol(av[1])) == 1)
+		return (1);
 	i = 0;
 	while (i < ft_atol(av[1]))
 	{
@@ -92,17 +69,18 @@ void	init_philo(t_main *data, char **av)
 		data->philos[i].meal_lock = &data->meal_lock;
 		data->philos[i].write_lock = &data->write_lock;
 		data->philos[i].write_lock = &data->full_lock;
-		data->philos[i].r_fork = &data->forks[i];
 		data->philos[i].last_meal = get_current_time();
+		data->philos[i].meals_eaten = 0;
+		data->philos[i].r_fork = &data->forks[i];
 		data->philos[i].l_fork = &data->forks[(i + ft_atol(av[1]) - 1)
 			% ft_atol(av[1])];
-		data->philos[i].meals_eaten = 0;
 		if (av[5])
 			data->philos[i].num_times_to_eat = ft_atol(av[5]);
 		else
 			data->philos[i].num_times_to_eat = -1;
 		++i;
 	}
+	return (0);
 }
 
 int	get_dead_flag(t_main *data)
@@ -145,18 +123,21 @@ void	ft_mysleep(time_t time)
 
 	start = get_current_time();
 	while (get_current_time() - start <= time)
-		usleep(100);
+		usleep(500);
 }
 
 void	my_print(t_philo *philo, char *msg)
 {
 	if (!msg || !philo)
 		return ;
-	pthread_mutex_lock(&philo->data->write_lock);
+	if (pthread_mutex_lock(&philo->data->write_lock) != 0)
+		return ;
 	if (!get_dead_flag(philo->data))
 		printf("%lld %d %s\n", get_current_time() - philo->start_time,
 			philo->id, msg);
-	pthread_mutex_unlock(&philo->data->write_lock);
+	if (pthread_mutex_unlock(&philo->data->write_lock) != 0)
+		return ;
+	return ;
 }
 
 void	ft_think(t_philo *philo)
@@ -164,6 +145,7 @@ void	ft_think(t_philo *philo)
 	if (get_dead_flag(philo->data) || philo->num_of_philos == 1)
 		return ;
 	my_print(philo, "is thinking");
+	return ;
 }
 
 void	ft_eat(t_philo *philo)
@@ -206,10 +188,12 @@ void	ft_sleep(t_philo *philo)
 		return ;
 	my_print(philo, "is sleeping");
 	ft_mysleep(philo->time_to_sleep);
+	return ;
 }
-void handel_single_ph(t_philo *philo)
+void	handel_single_ph(t_philo *philo)
 {
 	my_print(philo, "taken a fork");
+	return ;
 }
 
 void	*routine(void *args)
@@ -218,10 +202,7 @@ void	*routine(void *args)
 
 	philo = (t_philo *)args;
 	if (philo->num_of_philos == 1)
-	{
-		handel_single_ph(philo);
-		return (NULL);
-	}
+		return (handel_single_ph(philo), NULL);
 	while (!get_dead_flag(philo->data))
 	{
 		if (philo->id % 2 == 0)
@@ -246,6 +227,7 @@ void	set_meals_eaten(t_main *data, int val)
 	pthread_mutex_lock(&data->full_lock);
 	data->full_flag = val;
 	pthread_mutex_unlock(&data->full_lock);
+	return ;
 }
 
 int	get_meals_eaten(t_main *data)
@@ -275,6 +257,7 @@ void	check_full(t_main *data)
 	}
 	if (count == data->philos->num_of_philos)
 		set_meals_eaten(data, 1);
+	return ;
 }
 
 void	*monitor(void *args)
@@ -293,15 +276,10 @@ void	*monitor(void *args)
 				- (size_t)get_last_meal(&data->philos[i]) >= data->philos->time_to_die)
 			{
 				my_print(data->philos, "dead");
-				set_dead_flag(data, 1);
-				return (NULL);
+				return (set_dead_flag(data, 1), NULL);
 			}
 			if (get_meals_eaten(data) == 1)
-			{
-				my_print(data->philos, "dead");
-				set_dead_flag(data, 1);
-				return (NULL);
-			}
+				return (set_dead_flag(data, 1), NULL);
 			i++;
 		}
 		usleep(500);
@@ -309,7 +287,7 @@ void	*monitor(void *args)
 	return (NULL);
 }
 
-void	creat_thread(t_main *data)
+int	creat_thread(t_main *data)
 {
 	int			i;
 	pthread_t	monitor_th;
@@ -320,15 +298,22 @@ void	creat_thread(t_main *data)
 	while (i < data->philos->num_of_philos)
 	{
 		data->philos[i].data = data;
-		pthread_create(&data->philos[i].thread, NULL, &routine,
-			&data->philos[i]);
+		if (pthread_create(&data->philos[i].thread, NULL, &routine,
+				&data->philos[i]) != 0)
+			return (exit_error("Failed to create thread"), 1);
 		++i;
 	}
-	pthread_create(&monitor_th, NULL, monitor, data);
+	if (pthread_create(&monitor_th, NULL, monitor, data) != 0)
+		return (exit_error("Failed to create thread"), 1);
 	i = -1;
 	while (++i < data->philos->num_of_philos)
-		pthread_join(data->philos[i].thread, NULL);
-	pthread_join(monitor_th, NULL);
+		if (pthread_join(data->philos[i].thread, NULL) != 0)
+			return (exit_error("Failed to join thread"), 1);
+	if (pthread_join(monitor_th, NULL) != 0)
+		return (exit_error("Failed to join thread"), 1);
+	if (data->dead_flag == 1)
+		clean_up(data);
+	return (0);
 }
 
 int	main(int ac, char **av)
@@ -336,9 +321,13 @@ int	main(int ac, char **av)
 	t_main	data;
 
 	if (ac != 5 && ac != 6)
-		exit_error("Wrong input\nEnter valid input ./philo 12 600 200 200 [5]");
+		return (exit_error("Wrong input\nEnter valid input ./philo 12 600 200 200 [5]"),
+			1);
 	if (check_input(av, ac) == 1)
-		exit_error("Error: All arguments must be positive digits.");
-	init_philo(&data, av);
-	creat_thread(&data);
+		return (exit_error("Error: All arguments must be positive digits."), 1);
+	if (init_philo(&data, av) == 1)
+		return (1);
+	if (creat_thread(&data) == 1)
+		return (1);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 19:02:12 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/03 15:59:40 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/07 16:20:04 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,36 +40,36 @@ long	ft_atol(const char *str)
 	return (num * sign);
 }
 
-int is_valid(char *av)
+int	is_valid(char *av)
 {
-    int i;
+	int	i;
 
-    if (!av)
-        return (1);
-    i = 0;
-    if (av[i] == '+')
-        ++i;
-    while (av[i])
-    {
-        if (!ft_isdigit(av[i]))
-            return (1);
-        ++i; 
-    }
-    return (0);
+	if (!av)
+		return (1);
+	i = 0;
+	if (av[i] == '+')
+		++i;
+	while (av[i])
+	{
+		if (!ft_isdigit(av[i]))
+			return (1);
+		++i;
+	}
+	return (0);
 }
 
-int check_input(char **av, int ac)
+int	check_input(char **av, int ac)
 {
-    int i;
+	int	i;
 
-    if (!av || !(*av))
-        return (1);
-    i = 1;
-    while (i < ac)
-    {
-        if (is_valid(av[i]) || ft_atol(av[i]) < 1)
-            return (1);
-        ++i;
-    }
-    return (0);
+	if (!av || !(*av))
+		return (1);
+	i = 1;
+	while (i < ac)
+	{
+		if (is_valid(av[i]) || ft_atol(av[i]) < 1)
+			return (1);
+		++i;
+	}
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 11:23:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/06 09:28:15 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/07 15:04:05 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,3 +56,4 @@ long				ft_atol(const char *str);
 int					ft_isdigit(int c);
 int					check_input(char **av, int ac);
 void				exit_error(char *str);
+void	clean_up(t_main *data);
