@@ -8,6 +8,11 @@ CFLAGS 	= 	-Wall -Wextra -Werror  #-fsanitize=thread
 SRC 	=	philo.c \
 			utils.c \
 			parsing.c \
+			functions.c \
+			getters.c \
+			init_data.c \
+			setters.c \
+			threads.c \
 			
 
 

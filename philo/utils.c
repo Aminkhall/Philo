@@ -6,13 +6,13 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 11:26:36 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/07 16:05:39 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/08 15:31:18 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void exit_error(char *str)
+void	exit_error(char *str)
 {
 	printf("%s\n", str);
 	return ;
@@ -35,5 +35,25 @@ void	clean_up(t_main *data)
 		free(data->forks);
 	if (data->philos)
 		free(data->philos);
+	return ;
+}
+
+void	check_full(t_main *data)
+{
+	int	i;
+	int	count;
+
+	i = -1;
+	count = 0;
+	while (++i < data->philos->num_of_philos)
+	{
+		pthread_mutex_lock(data->philos[i].full_lock);
+		if (data->philos[i].num_times_to_eat > 0
+			&& data->philos[i].meals_eaten >= data->philos[i].num_times_to_eat)
+			count++;
+		pthread_mutex_unlock(data->philos[i].full_lock);
+	}
+	if (count == data->philos->num_of_philos)
+		set_meals_eaten(data, 1);
 	return ;
 }

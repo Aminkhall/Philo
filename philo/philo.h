@@ -6,16 +6,19 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 11:23:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/07 15:04:05 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/08 15:42:24 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <limits.h>
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <unistd.h>
+#ifndef PHILO_H
+# define PHILO_H
+
+# include <limits.h>
+# include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <sys/time.h>
+# include <unistd.h>
 
 typedef struct s_philo
 {
@@ -56,4 +59,21 @@ long				ft_atol(const char *str);
 int					ft_isdigit(int c);
 int					check_input(char **av, int ac);
 void				exit_error(char *str);
-void	clean_up(t_main *data);
+void				clean_up(t_main *data);
+int					get_dead_flag(t_main *data);
+long				get_last_meal(t_philo *philo);
+int					get_meals_eaten(t_main *data);
+void				set_dead_flag(t_main *data, int val);
+void				set_last_meal(t_philo *philo, long val);
+void				set_meals_eaten(t_main *data, int val);
+int					creat_thread(t_main *data);
+int					init_philo(t_main *data, char **av);
+void				ft_sleep(t_philo *philo);
+void				ft_eat(t_philo *philo);
+void				ft_think(t_philo *philo);
+void				my_print(t_philo *philo, char *msg);
+long long			get_current_time(void);
+void				ft_mysleep(time_t time);
+void				check_full(t_main *data);
+
+#endif
