@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 19:02:12 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/07 16:20:04 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/08 16:54:27 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,10 @@ long	ft_atol(const char *str)
 		num = num * 10 + (*str - '0');
 		str++;
 		if (num > INT_MAX)
+		{
 			exit_error("INT_MAX is the limit");
+			return (-1);
+		}
 	}
 	return (num * sign);
 }

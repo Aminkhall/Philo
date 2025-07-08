@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:30:14 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/08 15:48:20 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/08 17:43:37 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,6 @@ int	creat_thread(t_main *data)
 	if (pthread_join(monitor_th, NULL) != 0)
 		return (exit_error("Failed to join thread"), 1);
 	if (data->dead_flag == 1)
-		clean_up(data);
+		return (clean_up(data), 1);
 	return (0);
 }

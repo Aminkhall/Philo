@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:32:02 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/08 15:55:02 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/08 17:43:28 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,20 @@ int	init_main(t_main *data, int num_philo)
 	return (0);
 }
 
-// void	init_mutex(t_main *data, int i)
-// {
-// }
+void	init_var(t_main *data, char **av, int i)
+{
+	data->philos[i].dead_lock = &data->dead_lock;
+	data->philos[i].meal_lock = &data->meal_lock;
+	data->philos[i].write_lock = &data->write_lock;
+	data->philos[i].full_lock = &data->full_lock;
+	data->philos[i].r_fork = &data->forks[i];
+	data->philos[i].l_fork = &data->forks[(i + ft_atol(av[1]) - 1)
+		% ft_atol(av[1])];
+	if (av[5])
+		data->philos[i].num_times_to_eat = ft_atol(av[5]);
+	else
+		data->philos[i].num_times_to_eat = -1;
+}
 
 int	init_philo(t_main *data, char **av)
 {
@@ -60,19 +71,9 @@ int	init_philo(t_main *data, char **av)
 		data->philos[i].time_to_eat = ft_atol(av[3]);
 		data->philos[i].time_to_sleep = ft_atol(av[4]);
 		data->philos[i].start_time = get_current_time();
-		data->philos[i].dead_lock = &data->dead_lock;
-		data->philos[i].meal_lock = &data->meal_lock;
-		data->philos[i].write_lock = &data->write_lock;
-		data->philos[i].full_lock = &data->full_lock;
 		data->philos[i].last_meal = get_current_time();
 		data->philos[i].meals_eaten = 0;
-		data->philos[i].r_fork = &data->forks[i];
-		data->philos[i].l_fork = &data->forks[(i + ft_atol(av[1]) - 1)
-			% ft_atol(av[1])];
-		if (av[5])
-			data->philos[i].num_times_to_eat = ft_atol(av[5]);
-		else
-			data->philos[i].num_times_to_eat = -1;
+		init_var(data, av, i);
 		++i;
 	}
 	return (0);
