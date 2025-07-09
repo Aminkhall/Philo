@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:30:14 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/09 12:02:26 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/09 13:10:54 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ void	*monitor(void *args)
 		while (i < data->philos->num_of_philos)
 		{
 			if (get_current_time()
-				- (size_t)get_last_meal(&data->philos[i]) >= data->philos->time_to_die)
+				- (size_t)get_last_meal(&data->philos[i])
+				>= data->philos->time_to_die)
 			{
 				my_print(data->philos, "dead");
 				return (set_dead_flag(data, 1), NULL);
