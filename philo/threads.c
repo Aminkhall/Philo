@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:30:14 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/08 17:43:37 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/09 09:06:36 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,13 @@ void	*routine(void *args)
 	philo = (t_philo *)args;
 	if (philo->num_of_philos == 1)
 		return (handel_single_ph(philo), NULL);
+	if (philo->id % 2 == 0)
+		usleep(500);
 	while (!get_dead_flag(philo->data))
 	{
-		if (philo->id % 2 == 0)
-		{
-			ft_sleep(philo);
-			ft_think(philo);
-			ft_eat(philo);
-		}
-		else
-		{
-			ft_eat(philo);
-			ft_sleep(philo);
-			ft_think(philo);
-		}
+		ft_eat(philo);
+		ft_sleep(philo);
+		ft_think(philo);
 		usleep(500);
 	}
 	return (NULL);
