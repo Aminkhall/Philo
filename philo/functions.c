@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:35:29 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/08 17:41:50 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/09 09:43:12 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	eat_util(t_philo *philo)
 {
 	my_print(philo, "is eating");
 	set_last_meal(philo, get_current_time());
-	ft_mysleep(philo->time_to_eat);
+	ft_mysleep(philo->time_to_eat, philo->data);
 	pthread_mutex_lock(philo->meal_lock);
 	philo->meals_eaten++;
 	pthread_mutex_unlock(philo->meal_lock);
@@ -78,6 +78,6 @@ void	ft_sleep(t_philo *philo)
 	if (get_dead_flag(philo->data) || philo->num_of_philos == 1)
 		return ;
 	my_print(philo, "is sleeping");
-	ft_mysleep(philo->time_to_sleep);
+	ft_mysleep(philo->time_to_sleep, philo->data);
 	return ;
 }

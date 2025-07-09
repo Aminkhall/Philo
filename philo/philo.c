@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 11:27:41 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/08 17:29:36 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/09 09:50:01 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,19 @@ long long	get_current_time(void)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-void	ft_mysleep(time_t time)
+void	ft_mysleep(time_t time, t_main *data)
 {
 	time_t	start;
 
+	if (get_current_time() == -1)
+		return ;
 	start = get_current_time();
 	while (get_current_time() - start <= time)
-		usleep(500);
+	{
+		if (get_dead_flag(data) == 1)
+			return ;
+		usleep(1000);
+	}
 }
 
 int	main(int ac, char **av)

@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 11:23:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/08 15:42:24 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/09 09:42:22 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void				ft_eat(t_philo *philo);
 void				ft_think(t_philo *philo);
 void				my_print(t_philo *philo, char *msg);
 long long			get_current_time(void);
-void				ft_mysleep(time_t time);
+void				ft_mysleep(time_t time, t_main *data);
 void				check_full(t_main *data);
 
 #endif
