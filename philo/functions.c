@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:35:29 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/09 09:43:12 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:56:12 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,11 @@ void	my_print(t_philo *philo, char *msg)
 {
 	if (!msg || !philo)
 		return ;
-	if (pthread_mutex_lock(&philo->data->write_lock) != 0)
-		return ;
+	pthread_mutex_lock(&philo->data->write_lock);
 	if (!get_dead_flag(philo->data))
 		printf("%lld %d %s\n", get_current_time() - philo->start_time,
 			philo->id, msg);
-	if (pthread_mutex_unlock(&philo->data->write_lock) != 0)
-		return ;
+	pthread_mutex_unlock(&philo->data->write_lock);
 	return ;
 }
 

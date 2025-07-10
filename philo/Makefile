@@ -3,7 +3,7 @@ CC 		=	cc
 
 HEADER 	=	philo.h
 
-CFLAGS 	= 	-Wall -Wextra -Werror  #-fsanitize=thread
+CFLAGS 	= 	-Wall -Wextra -Werror
 
 SRC 	=	philo.c \
 			utils.c \
