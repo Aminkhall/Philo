@@ -28,13 +28,12 @@ void	*routine(void *args)
 	if (philo->num_of_philos == 1)
 		return (handel_single_ph(philo), NULL);
 	if (philo->id % 2 == 0)
-		usleep(500);
+		usleep(philo->time_to_eat / 2);
 	while (!get_dead_flag(philo->data))
 	{
 		ft_eat(philo);
 		ft_sleep(philo);
 		ft_think(philo);
-		usleep(500);
 	}
 	return (NULL);
 }
@@ -53,9 +52,9 @@ void	*monitor(void *args)
 		{
 			if (get_current_time()
 				- (size_t)get_last_meal(&data->philos[i])
-				>= data->philos->time_to_die)
+				> data->philos->time_to_die)
 			{
-				my_print(data->philos, "dead");
+				my_print(&data->philos[i], "died");
 				return (set_dead_flag(data, 1), NULL);
 			}
 			if (get_meals_eaten(data) == 1)

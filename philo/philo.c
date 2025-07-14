@@ -16,8 +16,7 @@ long long	get_current_time(void)
 {
 	struct timeval	time;
 
-	if (gettimeofday(&time, NULL) == -1)
-		return (-1);
+	gettimeofday(&time, NULL);
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
@@ -25,10 +24,8 @@ void	ft_mysleep(time_t time, t_main *data)
 {
 	time_t	start;
 
-	if (get_current_time() == -1)
-		return ;
 	start = get_current_time();
-	while (get_current_time() - start <= time)
+	while (get_current_time() - start < time)
 	{
 		if (get_dead_flag(data) == 1)
 			return ;
