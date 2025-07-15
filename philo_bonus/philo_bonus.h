@@ -53,4 +53,6 @@ long	ft_atol(const char *str);
 void my_print(t_philo *philo, char *msg);
 void philpho_routine(t_philo *philo);
 int init_data(t_data *data, char **av);
+void ft_eat(t_philo *philo);
+void ft_clean(t_data *data);
 #endif

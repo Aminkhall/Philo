@@ -7,61 +7,48 @@ void monitor_meals(sem_t *meals, t_data *data)
     i = -1;
     while ( ++i < data->num_of_philos)
         sem_wait(meals);
-    printf("All philosophers have eaten %d.\n", data->philos->num_to_eat);
     exit(1);
 }
 
-int init_data(t_data *data, char **av)
+int init_sem(t_data *data, char **av)
 {
-    int i;
-
-    data->num_of_philos = ft_atol(av[1]);
-    data->philos = malloc(sizeof(t_philo) * ft_atol(av[1]));
-    if (!data->philos)
-        return (1);
-
     sem_unlink("/forks");
-    data->forks = sem_open("/forks", O_CREAT , 0644, ft_atol(av[1]));
+    data->forks = sem_open("/forks", O_CREAT | O_EXCL, 0644, ft_atol(av[1]));
     if (data->forks == SEM_FAILED)
-    {      
-        free(data->philos);
-        return (1);
-    }
+        return (free(data->philos), 1);
     sem_unlink("/print");
-
-    data->print = sem_open("/print", O_CREAT , 0644, 1);
+    data->print = sem_open("/print", O_CREAT | O_EXCL, 0644, 1);
     if (data->print == SEM_FAILED)
     {   
         sem_close(data->forks);
         sem_unlink("/forks");
-        free(data->philos);
-        return (1);
+        return (free(data->philos), 1);
     }
     sem_unlink("/meals");
-    data->meals = sem_open("/meals", O_CREAT , 0644, 0);
+    data->meals = sem_open("/meals", O_CREAT | O_EXCL, 0644, 1);
     if (data->meals == SEM_FAILED)
     {  
         sem_close(data->forks);
         sem_unlink("/forks");
         sem_close(data->print);
         sem_unlink("/print");
-        free(data->philos);
-        return (1);
+        return (free(data->philos), 1);
     }
-    pid_t meal_monitor = fork();
-    if (meal_monitor < 0)
-    {
-        sem_close(data->forks);
-        sem_unlink("/forks");
-        sem_close(data->print);
-        sem_unlink("/print");
-        sem_close(data->meals);
-        sem_unlink("/meals");
-        free(data->philos);
-        return (1);
-    }
-    if (meal_monitor == 0)  
-        monitor_meals(data->meals, data);
+    return (0);
+}
+int fork_philo(t_data *data, int i)
+{
+    data->philos[i].pid = fork();
+    if (!(data->philos[i].pid))
+        philpho_routine(&data->philos[i]);
+    if (data->philos[i].pid < 0)
+        return (ft_clean(data), 1); 
+    return (0);
+}
+int init_philos(t_data *data, char **av)
+{
+    int i;
+
     i = -1;
     while (++i < ft_atol(av[1]))
     {
@@ -81,46 +68,47 @@ int init_data(t_data *data, char **av)
         data->philos[i].print = data->print;
         data->philos[i].meals = data->meals;
         data->philos[i].data = data;
-        data->philos[i].pid = fork();
-        if (!(data->philos[i].pid))
-            philpho_routine(&data->philos[i]);
-        if (data->philos[i].pid < 0)
-        {            
-            sem_close(data->forks);
-            sem_unlink("/forks");
-            sem_close(data->print);
-            sem_unlink("/print");
-            sem_close(data->meals);
-            sem_unlink("/meals");
-            free(data->philos);
-            return (1); 
-        }
+        if (fork_philo(data, i) == 1)
+            return (1);
     }
+    return (0);
+}
+void ft_kill(t_data *data, pid_t meal_monitor, char **av)
+{
+    int i;
     int status;
+
     wait(&status);
-    i = 0;
+    i = -1;
     if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
     {
-        while (i < ft_atol(av[1]))
-        {
+        while (++i < ft_atol(av[1]))
             kill(data->philos[i].pid, SIGKILL);
-            i++;
-        }
         kill(meal_monitor, SIGKILL);
     }
-    i = 0;
-    while (i < ft_atol(av[1]))
-    {
+}
+int init_data(t_data *data, char **av)
+{
+    int i;
+    pid_t meal_monitor;
+
+    data->num_of_philos = ft_atol(av[1]);
+    data->philos = malloc(sizeof(t_philo) * ft_atol(av[1]));
+    if (!data->philos)
+        return (1);
+    if (init_sem(data, av) == 1)
+        return (1);
+    meal_monitor = fork();
+    if (meal_monitor < 0)
+        return (ft_clean(data), 1); 
+    if (meal_monitor == 0)  
+        monitor_meals(data->meals, data);
+    if (init_philos(data, av) == 1)
+        return (1);
+    ft_kill(data, meal_monitor, av);
+    i = -1;
+    while (++i < ft_atol(av[1]))
         waitpid(data->philos[i].pid, NULL, 0);
-        ++i;
-    }
-    
-    sem_close(data->forks);
-    sem_unlink("/forks");
-    sem_close(data->print);
-    sem_unlink("/print");
-    sem_close(data->meals);
-    sem_unlink("/meals");
-    free(data->philos);
+    ft_clean(data);
     return (0);
 }
