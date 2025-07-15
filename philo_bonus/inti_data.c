@@ -8,7 +8,7 @@ void monitor_meals(sem_t *meals, t_data *data)
     while ( ++i < data->num_of_philos)
         sem_wait(meals);
     printf("All philosophers have eaten %d.\n", data->philos->num_to_eat);
-    exit(0);
+    exit(1);
 }
 
 int init_data(t_data *data, char **av)
@@ -60,7 +60,7 @@ int init_data(t_data *data, char **av)
     i = -1;
     while (++i < ft_atol(av[1]))
     {
-        data->philos->start_time = get_current_time();
+        data->philos[i].start_time = get_current_time();
         data->philos[i].id = i + 1;
         data->philos[i].meals_eaten = 0;
         data->philos[i].num_ph = ft_atol(av[1]);
@@ -91,5 +91,24 @@ int init_data(t_data *data, char **av)
             return (1); 
         }
     }
+    int status;
+    wait(&status);
+    i = 0;
+    if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
+    {
+        while (i < ft_atol(av[1]))
+        {
+            kill(data->philos[i].pid, SIGKILL);
+            i++;
+        }
+        kill(meal_monitor, SIGKILL);
+    }
+    sem_close(data->forks);
+    sem_unlink("/forks");
+    sem_close(data->print);
+    sem_unlink("/print");
+    sem_close(data->meals);
+    sem_unlink("/meals");
+    free(data->philos);
     return (0);
 }

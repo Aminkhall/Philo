@@ -29,15 +29,18 @@ typedef struct s_philo
     sem_t *forks;
     sem_t *print;
     sem_t *meals;
+    sem_t *dead;
     struct s_data *data;
 } t_philo;
 
 typedef struct s_data
 {
     int num_of_philos;
+    int dead_flag;
     sem_t *forks;
     sem_t *print;
     sem_t *meals;
+    sem_t *dead;
     t_philo *philos;
 } t_data;
 

@@ -43,6 +43,8 @@ void philpho_routine(t_philo *philo)
         my_print(philo, "is sleeping");
         ft_mysleep(philo->time_to_sleep);
         my_print(philo, "is thinking");
+        if (philo->num_to_eat != -1 && philo->meals_eaten >= philo->num_to_eat)
+            break;
     }
     sem_post(philo->meals);
     exit(0);
