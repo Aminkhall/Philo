@@ -26,6 +26,9 @@ int main(int ac, char **av)
     if (check_input(av, ac) == 1)
         exit_error("Error: All arguments must be positive digits.");
     if (init_data(&data, av) == 1)
-        exit_error("Error: Failed to initialize data.");    
+    {
+        exit_error("Error: Failed to initialize data.");
+        
+    }
     exit(0);    
 }

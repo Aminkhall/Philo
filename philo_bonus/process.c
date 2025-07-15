@@ -12,7 +12,9 @@ void *monitor(void *args)
     {
         if (get_current_time() - philo->last_meal > philo->time_to_die)
         {
-            my_print(philo, "died");
+            // my_print(philo, "died");
+            sem_wait(philo->print);
+            printf("%d died\n", philo->id);
             exit(1);
         }
         usleep(100);

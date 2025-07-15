@@ -19,13 +19,17 @@ int init_data(t_data *data, char **av)
     data->philos = malloc(sizeof(t_philo) * ft_atol(av[1]));
     if (!data->philos)
         return (1);
-    data->forks = sem_open("/forks", O_CREAT | O_EXCL, 0644, ft_atol(av[1]));
+
+    sem_unlink("/forks");
+    data->forks = sem_open("/forks", O_CREAT , 0644, ft_atol(av[1]));
     if (data->forks == SEM_FAILED)
     {      
         free(data->philos);
         return (1);
     }
-    data->print = sem_open("/print", O_CREAT | O_EXCL, 0644, 1);
+    sem_unlink("/print");
+
+    data->print = sem_open("/print", O_CREAT , 0644, 1);
     if (data->print == SEM_FAILED)
     {   
         sem_close(data->forks);
@@ -33,7 +37,8 @@ int init_data(t_data *data, char **av)
         free(data->philos);
         return (1);
     }
-    data->meals = sem_open("/meals", O_CREAT | O_EXCL, 0644, 0);
+    sem_unlink("/meals");
+    data->meals = sem_open("/meals", O_CREAT , 0644, 0);
     if (data->meals == SEM_FAILED)
     {  
         sem_close(data->forks);
@@ -103,6 +108,13 @@ int init_data(t_data *data, char **av)
         }
         kill(meal_monitor, SIGKILL);
     }
+    i = 0;
+    while (i < ft_atol(av[1]))
+    {
+        waitpid(data->philos[i].pid, NULL, 0);
+        ++i;
+    }
+    
     sem_close(data->forks);
     sem_unlink("/forks");
     sem_close(data->print);
