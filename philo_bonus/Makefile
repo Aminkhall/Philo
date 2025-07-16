@@ -3,7 +3,7 @@ CC 		=	cc
 
 HEADER 	=	philo_bonus.h
 
-CFLAGS 	= 	-Wall -Wextra -Werror
+CFLAGS 	= 	-Wall -Wextra -Werror #-fsanitize=thread
 
 SRC 	=	functions.c \
 			inti_data.c \

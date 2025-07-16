@@ -10,13 +10,15 @@ void *monitor(void *args)
 
     while (1)
     {
+        sem_wait(philo->meal_lock);
         if (get_current_time() - philo->last_meal > philo->time_to_die)
         {
-            // my_print(philo, "died");
+            sem_post(philo->meal_lock);
+            my_print(philo, "died");
             sem_wait(philo->print);
-            printf("%d died\n", philo->id);
             exit(1);
         }
+        sem_post(philo->meal_lock);
         usleep(100);
     }
     return (NULL);    

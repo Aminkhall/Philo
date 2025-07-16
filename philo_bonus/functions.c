@@ -12,13 +12,15 @@ void my_print(t_philo *philo, char *msg)
 
 void ft_eat(t_philo *philo)
 {
-     sem_wait(philo->forks);
+    sem_wait(philo->forks);
     my_print(philo, "has taken a fork");
     sem_wait(philo->forks);
     my_print(philo, "has taken a fork");
     my_print(philo, "is eating");
+    sem_wait(philo->meal_lock);
     philo->last_meal = get_current_time();
     philo->meals_eaten++;
+    sem_post(philo->meal_lock);
     ft_mysleep(philo->time_to_eat);
     sem_post(philo->forks);
     sem_post(philo->forks);

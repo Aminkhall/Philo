@@ -34,6 +34,18 @@ int init_sem(t_data *data, char **av)
         sem_unlink("/print");
         return (free(data->philos), 1);
     }
+    sem_unlink("/meal_lock");
+    data->meal_lock = sem_open("/meal_lock", O_CREAT | O_EXCL, 0644, 1);
+    if (data->meal_lock == SEM_FAILED)
+    {
+        sem_close(data->forks);
+        sem_unlink("/forks");
+        sem_close(data->print);
+        sem_unlink("/print");
+        sem_close(data->meals);
+        sem_unlink("/meals");
+        return (free(data->philos), 1);
+    }
     return (0);
 }
 int fork_philo(t_data *data, int i)
@@ -67,6 +79,7 @@ int init_philos(t_data *data, char **av)
         data->philos[i].forks = data->forks;
         data->philos[i].print = data->print;
         data->philos[i].meals = data->meals;
+        data->philos[i].meal_lock = data->meal_lock;
         data->philos[i].data = data;
         if (fork_philo(data, i) == 1)
             return (1);
@@ -85,6 +98,7 @@ void ft_kill(t_data *data, pid_t meal_monitor, char **av)
         while (++i < ft_atol(av[1]))
             kill(data->philos[i].pid, SIGKILL);
         kill(meal_monitor, SIGKILL);
+        // sem_post(data->print);
     }
 }
 int init_data(t_data *data, char **av)

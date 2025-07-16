@@ -29,7 +29,7 @@ typedef struct s_philo
     sem_t *forks;
     sem_t *print;
     sem_t *meals;
-    sem_t *dead;
+    sem_t *meal_lock;
     struct s_data *data;
 } t_philo;
 
@@ -40,7 +40,7 @@ typedef struct s_data
     sem_t *forks;
     sem_t *print;
     sem_t *meals;
-    sem_t *dead;
+    sem_t *meal_lock;
     t_philo *philos;
 } t_data;
 
