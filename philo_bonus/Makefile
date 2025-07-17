@@ -3,14 +3,15 @@ CC 		=	cc
 
 HEADER 	=	philo_bonus.h
 
-CFLAGS 	= 	-Wall -Wextra -Werror #-fsanitize=thread
+CFLAGS 	= 	-Wall -Wextra -Werror #-fsanitize=address -g
 
 SRC 	=	functions.c \
-			inti_data.c \
+			init_data.c \
 			parsing.c \
 			philo_bonus.c \
 			process.c \
 			utils.c \
+			start_exec.c \
 			
 
 
