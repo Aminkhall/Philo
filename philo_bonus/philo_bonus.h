@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 13:00:45 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/17 13:34:40 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:44:46 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <sys/time.h>
 # include <fcntl.h>
 # include <pthread.h>
+# include <libc.h>
 
 typedef struct s_philo
 {

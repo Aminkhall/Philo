@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 13:00:48 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/17 13:18:21 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:53:41 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ void	*monitor(void *args)
 		if (get_current_time() - philo->last_meal > philo->time_to_die)
 		{
 			sem_post(philo->meal_lock);
-			my_print(philo, "died");
 			sem_wait(philo->print);
+			printf("%lld %d died\n", get_current_time()
+				- philo->start_time, philo->id);
 			exit(1);
 		}
 		sem_post(philo->meal_lock);
