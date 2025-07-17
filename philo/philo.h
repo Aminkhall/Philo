@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 11:23:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/09 09:42:22 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/17 15:32:40 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,5 +75,6 @@ void				my_print(t_philo *philo, char *msg);
 long long			get_current_time(void);
 void				ft_mysleep(time_t time, t_main *data);
 void				check_full(t_main *data);
+void				ft_destroy_mut(t_main *data, int flag, int i);
 
 #endif

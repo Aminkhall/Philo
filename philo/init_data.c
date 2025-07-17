@@ -6,11 +6,28 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:32:02 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/08 17:43:28 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/17 15:36:57 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	init_mut(t_main *data, int i)
+{
+	if (pthread_mutex_init(&data->dead_lock, NULL) != 0)
+		return (ft_destroy_mut(data, 2, i),
+			exit_error("Failed to initialize mutex"), 1);
+	if (pthread_mutex_init(&data->meal_lock, NULL) != 0)
+		return (ft_destroy_mut(data, 3, i),
+			exit_error("Failed to initialize mutex"), 1);
+	if (pthread_mutex_init(&data->write_lock, NULL) != 0)
+		return (ft_destroy_mut(data, 4, i),
+			exit_error("Failed to initialize mutex"), 1);
+	if (pthread_mutex_init(&data->full_lock, NULL) != 0)
+		return (ft_destroy_mut(data, 5, i),
+			exit_error("Failed to initialize mutex"), 1);
+	return (0);
+}
 
 int	init_main(t_main *data, int num_philo)
 {
@@ -18,22 +35,17 @@ int	init_main(t_main *data, int num_philo)
 
 	data->forks = malloc(sizeof(pthread_mutex_t) * num_philo);
 	if (!data->forks)
-		return (exit_error("Somting wrong with malloc"), 1);
+		return (free(data->philos), exit_error("Somting wrong with malloc"), 1);
 	i = 0;
 	while (i < num_philo)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
-			return (exit_error("Failed to initialize mutex"), 1);
+			return (ft_destroy_mut(data, 1, i),
+				exit_error("Failed to initialize mutex"), 1);
 		++i;
 	}
-	if (pthread_mutex_init(&data->dead_lock, NULL) != 0)
-		return (exit_error("Failed to initialize mutex"), 1);
-	if (pthread_mutex_init(&data->meal_lock, NULL) != 0)
-		return (exit_error("Failed to initialize mutex"), 1);
-	if (pthread_mutex_init(&data->write_lock, NULL) != 0)
-		return (exit_error("Failed to initialize mutex"), 1);
-	if (pthread_mutex_init(&data->full_lock, NULL) != 0)
-		return (exit_error("Failed to initialize mutex"), 1);
+	if (init_mut(data, i) == 1)
+		return (1);
 	return (0);
 }
 

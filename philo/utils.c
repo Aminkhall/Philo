@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 11:26:36 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/07/09 18:06:20 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/07/17 15:32:03 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,27 @@
 void	exit_error(char *str)
 {
 	printf("%s\n", str);
+	return ;
+}
+
+void	ft_destroy_mut(t_main *data, int flag, int i)
+{
+	free(data->forks);
+	free(data->philos);
+	if (flag == 1)
+		while (i)
+			pthread_mutex_destroy(&data->forks[i--]);
+	else if (flag >= 2)
+	{
+		while (i)
+			pthread_mutex_destroy(&data->forks[i--]);
+		if (flag == 3)
+			pthread_mutex_destroy(&data->dead_lock);
+		else if (flag == 4)
+			pthread_mutex_destroy(&data->meal_lock);
+		else if (flag == 5)
+			pthread_mutex_destroy(&data->write_lock);
+	}
 	return ;
 }
 
